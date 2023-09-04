@@ -10,6 +10,8 @@ import torchvision.transforms as transforms
 import matplotlib.pyplot as plt
 from torch.utils.data.dataloader import DataLoader
 from PIL import Image
+import cv2
+
 data_dir  = 'Garbage classification\Garbage classification'
 
 classes = os.listdir(data_dir)
@@ -127,11 +129,32 @@ model = torch.load('BTP_model.pt',map_location=torch.device('cpu'))
 
 for i in range(100):
     print()
-# while(True):
-    # i = int(input('Enter the testing ID:'))
+
 img = Image.open('g.jpeg')
-img = transformations(img)
-print('Predicted:', predict_image(img, model))
+
+nimg = transformations(img)
+print('Predicted:', predict_image(nimg,model))
+img.show()
+while(True):
+    i = input('Another Image?(Y/N):')
+    if i in ['Y','y']:
+        cam = cv2.VideoCapture(1)
+        res,img = cam.read()
+        if res:
+            # cv2.imshow('Image for Class',img)
+            # cv2.waitKey(0)
+            img = cv2.cvtColor(img,cv2.COLOR_BGR2RGB)
+            img = Image.fromarray(img)
+            
+            # img = Image.open('g.jpeg')
+            nimg = transformations(img)
+            print('Predicted:', predict_image(nimg, model))
+            img.show()
+        else:
+            print('No Image Found')
+    else:
+        break
+
 
 
 
